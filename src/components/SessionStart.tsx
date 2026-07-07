@@ -4,7 +4,6 @@ import { loadCollection, spriteLevel } from "../game/collection";
 import { allSprites } from "../game/rarityEngine";
 import config from "../data/config.json";
 import type { HuntVariant } from "../game/types";
-import { speech } from "../audio/speech";
 import { ambientAudio } from "../audio/ambient";
 import SpriteArt from "./SpriteSvg";
 import TeaserSprite from "./TeaserSprite";
@@ -39,23 +38,12 @@ export default function SessionStart({ onBegin }: SessionStartProps) {
   useEffect(() => {
     if (introFired.current) return;
     introFired.current = true;
-
-    // Pre-load the audio buffer before gesture so it's ready to play instantly
+    // Pre-download audio buffer while user reads the screen; TapToBegin plays it on unlock
     ambientAudio.prefetch();
-
-    speech.onFirstGesture(() => {
-      // speakNow fires speak() immediately — no 50ms delay — maximises chance
-      // Chrome honours it as a direct gesture response
-      speech.speakNow(
-        "Sprite Hunters, let's go. Choose your mode — Forest Hunt, or Storm Hunt.",
-      );
-      // Start ambient 200ms later so AudioContext creation doesn't race speech
-      setTimeout(() => { ambientAudio.play(); }, 200);
-    });
   }, []);
 
   return (
-    <div className="relative z-10 flex h-full w-full flex-col items-center overflow-y-auto px-4 py-8 sm:px-6">
+    <div className="relative z-10 flex h-full w-full flex-col items-center overflow-y-auto px-3 py-5 sm:px-6 sm:py-8">
       <TeaserSprite />
 
       <div className="flex flex-col items-center gap-2 pt-4 text-center">
@@ -68,7 +56,7 @@ export default function SessionStart({ onBegin }: SessionStartProps) {
       </div>
 
       {/* Collection grid */}
-      <div className="mt-6 grid w-full max-w-3xl grid-cols-4 gap-2 sm:grid-cols-5 sm:gap-3">
+      <div className="mt-4 sm:mt-6 grid w-full max-w-3xl grid-cols-4 gap-1.5 sm:grid-cols-5 sm:gap-3">
         {allSprites.map((sprite, i) => {
           const level = spriteLevel(sprite.id, collection);
           const owned = level > 0;
@@ -121,14 +109,14 @@ export default function SessionStart({ onBegin }: SessionStartProps) {
       </div>
 
       {/* Hunt variant buttons */}
-      <div className="mt-6 flex flex-col gap-4 pb-6 sm:flex-row">
+      <div className="mt-4 sm:mt-6 flex flex-col gap-3 pb-4 sm:pb-6 sm:flex-row">
         {variants.map((v) => (
           <button
             key={v.id}
             type="button"
             data-testid={`variant-${v.id}`}
             onClick={() => onBegin(v)}
-            className="animate-btn-pulse group relative w-56 cursor-pointer rounded-2xl border-2 bg-[#101828]/80 px-6 py-6 text-center hover:scale-[1.04] active:scale-[0.98] sm:w-64"
+            className="animate-btn-pulse group relative w-full max-w-xs cursor-pointer rounded-2xl border-2 bg-[#101828]/80 px-6 py-5 sm:py-6 text-center hover:scale-[1.04] active:scale-[0.98]"
             style={{ borderColor: `${v.accent}66`, "--btn-accent": `${v.accent}55` } as React.CSSProperties}
           >
             <span

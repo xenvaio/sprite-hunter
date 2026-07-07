@@ -155,6 +155,19 @@ body,
 .animate-storm-lightning { animation: storm-lightning 4s ease-in-out infinite; }
 .animate-storm-lightning-2 { animation: storm-lightning-2 5s ease-in-out infinite 1.5s; }
 
+/* ── Tap to Begin overlay pulse ── */
+@keyframes tap-glow-pulse {
+  0%, 100% {
+    transform: scale(1);
+    text-shadow: 0 0 18px rgba(232,160,32,0.55), 0 0 44px rgba(232,160,32,0.18);
+  }
+  50% {
+    transform: scale(1.07);
+    text-shadow: 0 0 30px rgba(232,160,32,1), 0 0 64px rgba(232,160,32,0.55), 0 0 96px rgba(232,160,32,0.15);
+  }
+}
+.animate-tap-glow-pulse { animation: tap-glow-pulse 2.2s ease-in-out infinite; }
+
 /* Hunt button pulse — draws attention to the call-to-action */
 @keyframes btn-pulse {
   0%, 100% { box-shadow: 0 0 24px var(--btn-accent, rgba(45,125,154,0.2)); transform: scale(1); }

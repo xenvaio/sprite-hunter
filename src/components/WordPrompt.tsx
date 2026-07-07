@@ -21,7 +21,7 @@ export default function WordPrompt({ word, disabled, onAttempt }: WordPromptProp
   }, [word, disabled]);
 
   return (
-    <div className="flex flex-col items-center gap-7">
+    <div className="flex w-full flex-col items-center gap-4 sm:gap-7">
       <p
         data-testid="word"
         className="font-display text-center font-bold tracking-[0.08em] text-white"
@@ -53,7 +53,7 @@ export default function WordPrompt({ word, disabled, onAttempt }: WordPromptProp
           autoCorrect="off"
           spellCheck={false}
           enterKeyHint="go"
-          className="font-heading w-80 rounded-xl border-2 border-teal-chrome/50 bg-[#101828]/90 px-6 py-4 text-center text-3xl font-semibold tracking-widest text-white outline-none transition-all focus:border-teal-chrome focus:shadow-[0_0_24px_rgba(45,125,154,0.35)] placeholder:text-lg placeholder:text-[#3d5068]"
+          className="font-heading w-full max-w-xs rounded-xl border-2 border-teal-chrome/50 bg-[#101828]/90 px-4 sm:px-6 py-3 sm:py-4 text-center text-2xl sm:text-3xl font-semibold tracking-widest text-white outline-none transition-all focus:border-teal-chrome focus:shadow-[0_0_24px_rgba(45,125,154,0.35)] placeholder:text-base sm:placeholder:text-lg placeholder:text-[#3d5068]"
         />
       </form>
     </div>

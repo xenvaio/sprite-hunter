@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { speech } from "./audio/speech";
 import { ambientAudio } from "./audio/ambient";
 import CaptureAnimation from "./components/CaptureAnimation";
@@ -8,6 +8,7 @@ import LobbyBackground from "./components/LobbyBackground";
 import ParticleBackground from "./components/ParticleBackground";
 import SessionEnd from "./components/SessionEnd";
 import SessionStart from "./components/SessionStart";
+import TapToBegin from "./components/TapToBegin";
 import SpriteDisplay from "./components/SpriteDisplay";
 import WordPrompt from "./components/WordPrompt";
 import config from "./data/config.json";
@@ -119,6 +120,7 @@ const { spritesPerSession, maxSessionMinutes, tierVariance } = config.session;
 
 export default function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [audioUnlocked, setAudioUnlocked] = useState(false);
   const current: HuntEntry | undefined = state.hunt[state.index];
 
   useEffect(() => {
@@ -186,6 +188,10 @@ export default function App() {
 
       {state.screen === "start" && <SessionStart onBegin={handleBegin} />}
 
+      {state.screen === "start" && !audioUnlocked && (
+        <TapToBegin onComplete={() => setAudioUnlocked(true)} />
+      )}
+
       {state.screen === "hunt" && current && (
         <>
           <HUD
@@ -205,10 +211,10 @@ export default function App() {
 
           <div
             data-testid="arena"
-            className="relative z-10 flex h-full w-full flex-col items-center justify-center pt-16"
+            className="relative z-10 flex h-full w-full flex-col items-center justify-center pt-14 sm:pt-16"
           >
             <div
-              className="relative flex flex-col items-center gap-8 rounded-3xl px-10 py-8"
+              className="relative w-full max-w-sm flex flex-col items-center gap-5 sm:gap-8 rounded-3xl px-4 sm:px-10 py-6 sm:py-8 mx-3"
               style={{
                 background: "rgba(6, 8, 18, 0.5)",
                 backdropFilter: "blur(12px)",
@@ -217,7 +223,7 @@ export default function App() {
                 border: "1px solid rgba(255,255,255,0.06)",
               }}
             >
-              <div className="relative flex h-64 items-center justify-center">
+              <div className="relative flex h-48 sm:h-64 items-center justify-center">
                 <SpriteDisplay sprite={current.sprite} celebrating={state.celebrating} dart={state.dart} />
 
                 {state.praise && (

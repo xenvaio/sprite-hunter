@@ -25,9 +25,9 @@ export default function SessionEnd({ captures, onAgain }: SessionEndProps) {
   return (
     <div
       data-testid="session-end"
-      className="relative z-10 flex h-full w-full flex-col items-center justify-center gap-8 overflow-y-auto px-6 py-12"
+      className="relative z-10 flex h-full w-full flex-col items-center justify-center gap-5 sm:gap-8 overflow-y-auto px-4 py-8 sm:px-6 sm:py-12"
     >
-      <h1 className="font-display animate-glow-breathe text-4xl font-black tracking-[0.14em] text-amber-glow sm:text-5xl">
+      <h1 className="font-display animate-glow-breathe text-3xl font-black tracking-[0.14em] text-amber-glow sm:text-4xl lg:text-5xl">
         HUNT COMPLETE
       </h1>
 
@@ -37,7 +37,7 @@ export default function SessionEnd({ captures, onAgain }: SessionEndProps) {
           return (
             <div
               key={`${c.sprite.id}-${i}`}
-              className="animate-reveal-in flex w-32 flex-col items-center gap-1 rounded-xl border bg-[#101828]/80 px-3 pb-3 pt-4"
+              className="animate-reveal-in flex w-28 sm:w-32 flex-col items-center gap-1 rounded-xl border bg-[#101828]/80 px-2 sm:px-3 pb-2 sm:pb-3 pt-3 sm:pt-4"
               style={{
                 animationDelay: `${0.5 + i * 0.55}s`,
                 borderColor: `${rarity.glowColor}55`,
