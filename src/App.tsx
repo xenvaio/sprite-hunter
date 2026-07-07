@@ -174,7 +174,6 @@ export default function App() {
   };
 
   const variantId = state.variant?.id as "forest" | "storm" | undefined;
-  const accent = state.variant?.accent ?? "#2d7d9a";
 
   return (
     <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-void">
