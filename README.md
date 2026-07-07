@@ -24,7 +24,7 @@ When asked how he felt about reading difficulties, he brushed it off. When asked
 
 The goal was to build something that targets his specific literacy gap while feeling indistinguishable from the games he already loves — so the act of playing is the act of learning, without the two feeling separate.
 
-Carter (5, Kindergarten) plays a beginner version of the same game using the same mechanic, simpler words, and friendlier Sprites. Both boys contribute captures to one shared collection in co-op mode — they win together, never against each other.
+Carter (5, Kindergarten) plays the same game using the same mechanic. The word list combines both boys' levels — ranging from very basic sight words through to higher-level words — so each session naturally contains a mix of difficulty. Both boys contribute captures to one shared collection in co-op mode — they win together, never against each other.
 
 ---
 
