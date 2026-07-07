@@ -1,0 +1,23 @@
+{
+  "players": [
+    { "id": "p1", "name": "Mason", "wordTier": 3 },
+    { "id": "p2", "name": "Carter", "wordTier": 1 }
+  ],
+  "session": {
+    "spritesPerSession": 10,
+    "maxSessionMinutes": 10,
+    "tierVariance": 1,
+    "nextSpriteDelayMs": 1500
+  },
+  "speech": {
+    "enabled": true,
+    "speakWordOnAppear": true,
+    "rate": 0.95,
+    "volume": 0.9,
+    "preferredLangs": ["en-AU", "en-GB", "en-US"]
+  },
+  "huntVariants": [
+    { "id": "forest", "name": "Forest Hunt", "accent": "#3FBF6F" },
+    { "id": "storm", "name": "Storm Hunt", "accent": "#6B3FA0" }
+  ]
+}

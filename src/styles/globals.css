@@ -1,0 +1,185 @@
+@import "tailwindcss";
+
+@theme {
+  --color-void: #0a0e1a;
+  --color-amber-glow: #e8a020;
+  --color-teal-chrome: #2d7d9a;
+  --color-rare-purple: #6b3fa0;
+  --font-display: "Orbitron", sans-serif;
+  --font-heading: "Rajdhani", sans-serif;
+  --font-body: "Inter", sans-serif;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background-color: #0a0e1a;
+  font-family: "Inter", sans-serif;
+  color: #eaf0f8;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+/* ── Ambient ── */
+@keyframes ambient-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.04); }
+}
+
+@keyframes sprite-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+
+@keyframes glow-breathe {
+  0%, 100% { filter: drop-shadow(0 0 12px var(--glow, #2d7d9a)); }
+  50% { filter: drop-shadow(0 0 28px var(--glow, #2d7d9a)); }
+}
+
+/* ── Capture ── */
+@keyframes capture-pop {
+  0% { transform: scale(1); opacity: 1; }
+  45% { transform: scale(1.35); opacity: 1; }
+  100% { transform: scale(0.05); opacity: 0; }
+}
+
+@keyframes prompt-float {
+  0% { opacity: 0; transform: translateY(10px); }
+  15% { opacity: 1; transform: translateY(0); }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-8px); }
+}
+
+@keyframes praise-pop {
+  0% { opacity: 0; transform: scale(0.8); }
+  20% { opacity: 1; transform: scale(1.08); }
+  35% { transform: scale(1); }
+  75% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes reveal-in {
+  from { opacity: 0; transform: translateY(26px) scale(0.9); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes burst-fly {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(0.15); opacity: 0; }
+}
+
+@keyframes capture-flash {
+  0% { opacity: 0; }
+  18% { opacity: 0.55; }
+  100% { opacity: 0; }
+}
+
+@keyframes cosmic-flash {
+  0% { opacity: 0; }
+  20% { opacity: 0.65; }
+  100% { opacity: 0; }
+}
+
+@keyframes cosmic-veil {
+  0% { opacity: 0; }
+  25% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes orbit-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes xp-pulse {
+  0% { transform: scaleY(1); filter: brightness(1); }
+  35% { transform: scaleY(1.25); filter: brightness(1.5); }
+  100% { transform: scaleY(1); filter: brightness(1); }
+}
+
+/* ── Rarity auras ── */
+@keyframes rarity-pulse-green {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.06); }
+}
+
+@keyframes rarity-shimmer-blue {
+  0%, 100% { opacity: 0.35; transform: scale(1) rotate(0deg); }
+  25% { opacity: 0.7; transform: scale(1.04) rotate(2deg); }
+  50% { opacity: 0.5; transform: scale(1.08) rotate(0deg); }
+  75% { opacity: 0.7; transform: scale(1.04) rotate(-2deg); }
+}
+
+/* ── Storm lightning ── */
+@keyframes storm-lightning {
+  0%, 70%, 100% { opacity: 0.7; }
+  72% { opacity: 0; }
+  74% { opacity: 0.9; }
+  76% { opacity: 0; }
+  78% { opacity: 0.6; }
+}
+
+@keyframes storm-lightning-2 {
+  0%, 40%, 100% { opacity: 0.4; }
+  42% { opacity: 0; }
+  44% { opacity: 0.7; }
+  46% { opacity: 0; }
+}
+
+/* ── Utility classes ── */
+.animate-burst-fly { animation: burst-fly 0.85s ease-out forwards; }
+.animate-capture-flash { animation: capture-flash 0.7s ease-out forwards; }
+.animate-cosmic-flash { animation: cosmic-flash 1.4s ease-out forwards; }
+.animate-cosmic-veil { animation: cosmic-veil 3s ease-in-out forwards; }
+.animate-orbit-spin { animation: orbit-spin 6s linear infinite; }
+.animate-xp-pulse { animation: xp-pulse 0.7s ease-out; }
+.animate-capture-pop { animation: capture-pop 1.1s ease-in forwards; }
+.animate-prompt-float { animation: prompt-float 2.2s ease-in-out forwards; }
+.animate-praise-pop { animation: praise-pop 1.4s ease-out forwards; }
+.animate-reveal-in { animation: reveal-in 0.7s ease-out both; }
+.animate-ambient-pulse { animation: ambient-pulse 5s ease-in-out infinite; }
+.animate-sprite-float { animation: sprite-float 3.2s ease-in-out infinite; }
+.animate-glow-breathe { animation: glow-breathe 2.8s ease-in-out infinite; }
+.animate-rarity-pulse-green { animation: rarity-pulse-green 2.4s ease-in-out infinite; }
+.animate-rarity-shimmer-blue { animation: rarity-shimmer-blue 3s ease-in-out infinite; }
+.animate-storm-lightning { animation: storm-lightning 4s ease-in-out infinite; }
+.animate-storm-lightning-2 { animation: storm-lightning-2 5s ease-in-out infinite 1.5s; }
+
+/* Hunt button pulse — draws attention to the call-to-action */
+@keyframes btn-pulse {
+  0%, 100% { box-shadow: 0 0 24px var(--btn-accent, rgba(45,125,154,0.2)); transform: scale(1); }
+  50% { box-shadow: 0 0 40px var(--btn-accent, rgba(45,125,154,0.4)); transform: scale(1.02); }
+}
+.animate-btn-pulse { animation: btn-pulse 2.4s ease-in-out infinite; }
+
+/* ── Teaser sprite zip ── */
+@keyframes teaser-zip {
+  0% { transform: translate(var(--teaser-start, -120px), 0); }
+  100% { transform: translate(var(--teaser-end, calc(100vw + 40px)), var(--teaser-y-drift, 0)); }
+}
+
+@keyframes teaser-blur {
+  0% { filter: blur(0px); opacity: 0.3; }
+  15% { filter: blur(2px); opacity: 0.9; }
+  50% { filter: blur(1px); opacity: 1; }
+  85% { filter: blur(3px); opacity: 0.8; }
+  100% { filter: blur(0px); opacity: 0; }
+}
+
+@keyframes teaser-trail-fade {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.2); }
+}
+
+.float-delay-1 { animation-delay: -1.6s; }
+.float-delay-2 { animation-delay: -2.4s; }

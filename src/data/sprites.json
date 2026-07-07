@@ -1,0 +1,61 @@
+{
+  "rarities": {
+    "common": {
+      "tier": 1,
+      "glowColor": "#C8D4E8",
+      "coreColor": "#EAF0F8",
+      "auraColor": "rgba(200, 212, 232, 0.35)",
+      "captureDurationMs": 1500
+    },
+    "uncommon": {
+      "tier": 2,
+      "glowColor": "#3FBF6F",
+      "coreColor": "#8FE8B0",
+      "auraColor": "rgba(63, 191, 111, 0.35)",
+      "captureDurationMs": 1500
+    },
+    "rare": {
+      "tier": 3,
+      "glowColor": "#3D8FE8",
+      "coreColor": "#8FC4F5",
+      "auraColor": "rgba(61, 143, 232, 0.38)",
+      "captureDurationMs": 1500
+    },
+    "epic": {
+      "tier": 4,
+      "glowColor": "#6B3FA0",
+      "coreColor": "#B48FE8",
+      "auraColor": "rgba(107, 63, 160, 0.42)",
+      "captureDurationMs": 1500
+    },
+    "legendary": {
+      "tier": 5,
+      "glowColor": "#E8A020",
+      "coreColor": "#FFD87A",
+      "auraColor": "rgba(232, 160, 32, 0.45)",
+      "captureDurationMs": 3000
+    }
+  },
+  "sprites": [
+    { "id": "water", "name": "Water", "rarity": "common", "hue": 195 },
+    { "id": "air", "name": "Air", "rarity": "common", "hue": 210 },
+    { "id": "cloud", "name": "Cloud", "rarity": "common", "hue": 220 },
+    { "id": "fishy", "name": "Fishy", "rarity": "common", "hue": 18 },
+    { "id": "fire", "name": "Fire", "rarity": "uncommon", "hue": 30 },
+    { "id": "earth", "name": "Earth", "rarity": "uncommon", "hue": 30 },
+    { "id": "spark", "name": "Spark", "rarity": "uncommon", "hue": 50 },
+    { "id": "dream", "name": "Dream", "rarity": "uncommon", "hue": 280 },
+    { "id": "ghost", "name": "Ghost", "rarity": "rare", "hue": 290 },
+    { "id": "duck", "name": "Duck", "rarity": "rare", "hue": 45 },
+    { "id": "punk", "name": "Punk", "rarity": "rare", "hue": 260 },
+    { "id": "striker", "name": "Striker", "rarity": "rare", "hue": 215 },
+    { "id": "aura", "name": "Aura", "rarity": "rare", "hue": 180 },
+    { "id": "demon", "name": "Demon", "rarity": "epic", "hue": 0 },
+    { "id": "king", "name": "King", "rarity": "epic", "hue": 265 },
+    { "id": "peanut", "name": "Burnt Peanut", "rarity": "epic", "hue": 35 },
+    { "id": "grim", "name": "Grim", "rarity": "epic", "hue": 270 },
+    { "id": "zeropoint", "name": "ZERO POINT", "rarity": "legendary", "hue": 300, "cosmic": true },
+    { "id": "boss", "name": "Boss", "rarity": "legendary", "hue": 0 },
+    { "id": "frost", "name": "Frost", "rarity": "legendary", "hue": 195 }
+  ]
+}
