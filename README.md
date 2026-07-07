@@ -55,7 +55,7 @@ The Zero Point Sprite — Fortnite's cosmological lore element, a black hole at 
 
 ### Co-op Mode
 
-Two player profiles (Mason and Carter) take turns. Mason's words are harder, Carter's are simpler. Neither player sees the other's difficulty tier. All captured Sprites go into one shared collection. They win together.
+Two player profiles (Mason and Carter) take turns. Both draw from the same blended word list — ranging from very basic sight words through to higher-level words — so each session contains a natural mix of difficulty without either player being assigned a separate tier. All captured Sprites go into one shared collection. They win together.
 
 ### Design Constraints
 
@@ -133,7 +133,7 @@ Open `http://localhost:5173` in Chrome. Tap the pulsing button to unlock audio �
 
 ## Word List
 
-The starter word list is based on the Australian Year 1–2 sight word curriculum. It is designed to be replaced without any code changes — edit `src/data/words.json` and the game adapts automatically.
+The starter word list spans from basic Kindergarten sight words through to Year 2–3 level words, covering both boys' current levels in a single blended list. It is designed to be replaced without any code changes — edit `src/data/words.json` and the game adapts automatically.
 
 The word list will be calibrated by Mason's tutor once formal sessions begin, aligned to his confirmed reading level and the specific gap areas identified by his teacher.
 
@@ -142,7 +142,7 @@ The word list will be calibrated by Mason's tutor once formal sessions begin, al
 ## What's Next
 
 - [ ] Word list calibration aligned to tutor and teacher input
-- [ ] Carter beginner mode tuning based on joint co-design session
+- [ ] Word list refinement based on joint co-design session with Carter
 - [ ] Adaptive difficulty — word list adjusts based on session performance
 - [ ] Storm Surge mode — reviewed with OT before implementing
 - [ ] Sprite design competition entry (Epic Games — Chapter 7 Season 3)
