@@ -161,7 +161,13 @@ export default function App() {
     return () => clearTimeout(t);
   }, [state.screen]);
 
+  // Flush all audio the moment a hunt ends, so nothing from it bleeds onward.
+  useEffect(() => {
+    if (state.screen === "end") audioPlayer.stopAll();
+  }, [state.screen]);
+
   const handleBegin = (variant: HuntVariant) => {
+    audioPlayer.stopAll();
     ambientAudio.fadeOut();
     const hunt = buildHunt(activePlayer.wordTier, spritesPerSession, tierVariance);
     skipFirstWord.current = true;
@@ -275,7 +281,7 @@ export default function App() {
         <SessionEnd
           captures={state.captures}
           onAgain={() => {
-            audioPlayer.stop();
+            audioPlayer.stopAll();
             ambientAudio.play();
             dispatch({ type: "reset" });
           }}

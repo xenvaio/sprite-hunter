@@ -230,30 +230,27 @@ end ──[reset]──> start
 
 ---
 
-## Phase 3 — Audio (Complete as of 2026-07-09)
+## Phase 3 — Audio (Reworked 2026-07-09)
 
-### New: `src/audio/audioPlayer.ts`
-- Routes all game speech through HTML5 Audio (`/audio/*.mp3`)
-- Falls back to Web Speech API (Microsoft Catherine en-AU) if file is absent or fails
-- Dynamic: dropping new MP3s into `public/audio/` picks them up automatically with no code changes
-- Covers: intro, hunt-start (forest/storm), praise (10 variants), encouragement (5 variants), word pronunciations (24 pre-generated), session end (counts 0–10), sprite names (20), cosmic capture
-- `preload()` warms the cache for sys-intro, sys-hunt-forest, sys-hunt-storm inside first gesture
+### `src/audio/audioPlayer.ts` — centralised audio manager (Web Audio)
+- **All voice clips play through the Web Audio API on the shared `AudioContext`** (the same one the ambient music uses) — decoded MP3 buffers, NOT HTML5 `<audio>` elements. Mixing `<audio>` with Web Audio makes iOS kill the ambient when a clip ends; one unified system fixes it and removes iOS per-element unlock issues.
+- Components never call `speechSynthesis`/`Audio` directly — everything routes through this manager.
+- Falls back to Web Speech API (Microsoft Catherine en-AU) if a file is absent/undecodable.
+- Dynamic: dropping new MP3s into `public/audio/` picks them up automatically (buffer cache keyed by filename).
+- Covers: intro, hunt-start (forest/storm), praise (10), encouragement (5), words, session end (0–10), sprite names, cosmic capture.
+- `preload()` warms the buffer cache for sys-intro + hunt clips inside the first gesture.
+- `stopAll()` — stops all voice buffer sources, cancels Web Speech, clears pending timers. Called on **hunt start, hunt end, and return to lobby** so no audio bleeds between sessions.
+- `visibilitychange` listener flushes everything when the tab is hidden (no queued iOS speech firing on return); playback is guarded while `document.hidden`.
+- `unlock()` — resumes the context + unlocks Web Speech synchronously inside the opening tap gesture (iOS requirement).
 
-### New interactivity
-- **Word replay button** — Speaker SVG beside the displayed word; tapping replays the word audio
-- **Sprite tap** — Tapping any sprite card in collection plays its name (owned) or a descending tone (unowned), with amber glow-pulse animation
-- **Tap hand** — Animated SVG hand bounces below TAP TO BEGIN text
-
-### Audio file naming issue (3 files)
-Three ElevenLabs-generated files have double `.mp3` extension and need renaming:
-- `praise-got-em.mp3.mp3` → rename to `praise-got-em.mp3`
-- `praise-nailed-it.mp3.mp3` → rename to `praise-nailed-it.mp3`
-- `praise-you-got-it.mp3.mp3` → rename to `praise-you-got-it.mp3`
-Until renamed, these three phrases fall back to Web Speech API.
+### Word audio coverage (IMPORTANT for iPhone)
+- Words with an MP3 speak reliably on all devices. Words **without** an MP3 fall back to Web Speech, which is **unreliable on iOS** (silent, or fires on backgrounding).
+- Only 24 word MP3s exist (all tier 1 + `said/was/they/my`). **Mason plays tiers 2–4**, so ~40 of his words have no MP3 and won't reliably speak on iPhone until recorded.
+- Fix path: add `word-<word>.mp3` (lowercase) files to `public/audio/` — no code change needed. (Owner is generating these.)
 
 ## Known Bugs / Open Issues
 
-1. **3 praise MP3 files need renaming** — See above.
+1. **~40 word MP3s missing for tiers 2–4** — iPhone word speech unreliable until added. See above.
 
 2. **Player switching not implemented** — Always uses `players[0]` (Mason). Phase 4 scope.
 

@@ -138,7 +138,10 @@ export const speech = {
   word(text: string): void {
     if (!supported || !settings.enabled || !gestureReceived) return;
     if (!settings.speakWordOnAppear) return;
-    speakQueue(text, Math.min(settings.rate, 0.85));
+    if (typeof document !== "undefined" && document.hidden) return;
+    // Interrupt (not queue) so a replay tap restarts cleanly and iOS can't
+    // stack repeated utterances.
+    speakInterrupt(text, Math.min(settings.rate, 0.85));
   },
 
   stop(): void {
