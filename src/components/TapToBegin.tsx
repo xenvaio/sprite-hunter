@@ -48,7 +48,15 @@ export default function TapToBegin({ onComplete }: Props) {
           src="/tap%20to%20begin%20image.png"
           alt=""
           draggable={false}
-          style={{ width: "100%", display: "block", pointerEvents: "none" }}
+          style={{
+            width: "100%",
+            display: "block",
+            pointerEvents: "none",
+            // Subtle amber glow to lift the thin neon strokes a touch — light
+            // opacity so it never reads heavy against the label.
+            filter:
+              "drop-shadow(0 0 1px rgba(232,160,32,0.6)) drop-shadow(0 0 4px rgba(232,160,32,0.35))",
+          }}
         />
       </div>
 
