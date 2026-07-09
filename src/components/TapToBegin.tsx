@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { getResumedCtx } from "../audio/audioContext";
 import { ambientAudio } from "../audio/ambient";
-import { speech } from "../audio/speech";
+import { audioPlayer } from "../audio/audioPlayer";
 
 interface Props {
   onComplete: () => void;
@@ -13,21 +13,18 @@ export default function TapToBegin({ onComplete }: Props) {
   const handleTap = async () => {
     if (fading) return;
     setFading(true);
-    // Resume Web Audio on this gesture tick
+    // Preload critical files inside gesture so iOS HTML5 Audio is unlocked
+    audioPlayer.preload();
+    // Resume Web Audio context (needed for ambient music)
     try { await getResumedCtx(); } catch { /* ignore */ }
-    // pointerdown already fired markGesture so gestureReceived is true
-    speech.speakNow(
-      "Sprite Hunters, let's go — choose your mode, Forest Hunt or Storm Hunt.",
-    );
-    // Slight delay so the speech utterance claim lands before AudioContext buffers start
-    setTimeout(() => { void ambientAudio.play(); }, 150);
-    // Unmount after the CSS fade completes
+    audioPlayer.playIntro();
+    void ambientAudio.play();
     setTimeout(onComplete, 650);
   };
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center"
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-6"
       style={{
         background:
           "radial-gradient(ellipse at 50% 45%, rgba(10,14,26,0.58) 0%, rgba(10,14,26,0.90) 100%)",
@@ -54,6 +51,16 @@ export default function TapToBegin({ onComplete }: Props) {
       >
         TAP TO BEGIN
       </button>
+
+      {/* Tap hand indicator */}
+      <div className="animate-tap-hand flex flex-col items-center" aria-hidden="true">
+        <svg viewBox="0 0 28 36" width="26" height="33" fill="#e8a020" opacity="0.72">
+          {/* Index finger */}
+          <rect x="9" y="0" width="10" height="20" rx="5" />
+          {/* Palm body */}
+          <rect x="0" y="14" width="28" height="22" rx="11" />
+        </svg>
+      </div>
     </div>
   );
 }

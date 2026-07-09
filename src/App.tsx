@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useState } from "react";
-import { speech } from "./audio/speech";
+import { audioPlayer } from "./audio/audioPlayer";
 import { ambientAudio } from "./audio/ambient";
 import CaptureAnimation from "./components/CaptureAnimation";
 import HUD from "./components/HUD";
@@ -134,7 +134,7 @@ export default function App() {
 
   useEffect(() => {
     if (state.screen !== "hunt" || !current || state.celebrating) return;
-    const t = setTimeout(() => speech.word(current.word), 400);
+    const t = setTimeout(() => audioPlayer.playWord(current.word), 400);
     return () => clearTimeout(t);
   }, [state.screen, state.index, state.celebrating]);
 
@@ -152,7 +152,7 @@ export default function App() {
 
   const handleBegin = (variant: HuntVariant) => {
     ambientAudio.fadeOut();
-    speech.guidance(`${variant.name}! Let's go!`);
+    audioPlayer.playHuntStart(variant.id);
     dispatch({
       type: "begin",
       variant,
@@ -167,11 +167,12 @@ export default function App() {
       const praise = isCosmic ? "ZERO POINT CAPTURED" : pickPraise();
       recordCapture(current.sprite.id);
       dispatch({ type: "capture", praise });
-      speech.guidance(isCosmic ? "Zero Point captured! Incredible!" : praise.toLowerCase());
+      if (isCosmic) audioPlayer.playCosmicCapture();
+      else audioPlayer.playPraise(praise);
     } else {
       const prompt = pickEncouragement();
       dispatch({ type: "dodge", dart: nextDartOffset(state.dart), prompt });
-      speech.guidance(prompt);
+      audioPlayer.playEncouragement(prompt);
     }
   };
 
@@ -251,6 +252,7 @@ export default function App() {
                 word={current.word}
                 disabled={state.celebrating}
                 onAttempt={handleAttempt}
+                onReplay={() => audioPlayer.playWord(current.word)}
               />
             </div>
           </div>
@@ -261,7 +263,7 @@ export default function App() {
         <SessionEnd
           captures={state.captures}
           onAgain={() => {
-            speech.stop();
+            audioPlayer.stop();
             ambientAudio.play();
             dispatch({ type: "reset" });
           }}

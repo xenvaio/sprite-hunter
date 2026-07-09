@@ -1,10 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type React from "react";
 import { loadCollection, spriteLevel } from "../game/collection";
 import { allSprites } from "../game/rarityEngine";
 import config from "../data/config.json";
 import type { HuntVariant } from "../game/types";
 import { ambientAudio } from "../audio/ambient";
+import { audioPlayer } from "../audio/audioPlayer";
 import SpriteArt from "./SpriteSvg";
 import TeaserSprite from "./TeaserSprite";
 
@@ -34,6 +35,7 @@ export default function SessionStart({ onBegin }: SessionStartProps) {
   const variants = config.huntVariants as HuntVariant[];
   const collection = loadCollection();
   const introFired = useRef(false);
+  const [tappedId, setTappedId] = useState<string | null>(null);
 
   useEffect(() => {
     if (introFired.current) return;
@@ -64,10 +66,21 @@ export default function SessionStart({ onBegin }: SessionStartProps) {
           const labelBg = RARITY_LABEL_BG[sprite.rarity] ?? "#444";
           const glowIntensity = Math.min(level, 5);
 
+          const handleSpriteTap = () => {
+            setTappedId(sprite.id);
+            setTimeout(() => setTappedId(id => id === sprite.id ? null : id), 700);
+            if (owned) audioPlayer.playSpriteName(sprite.id);
+            else audioPlayer.playLockedSound();
+          };
+
           return (
             <div
               key={sprite.id}
-              className="relative flex flex-col items-center rounded-xl border bg-[#101828]/80 pb-2 pt-3"
+              role="button"
+              tabIndex={0}
+              onClick={handleSpriteTap}
+              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleSpriteTap(); }}
+              className="relative flex flex-col items-center rounded-xl border bg-[#101828]/80 pb-2 pt-3 cursor-pointer"
               style={{
                 borderColor: owned ? `${border}88` : "#1e2838",
                 boxShadow: owned
@@ -75,6 +88,9 @@ export default function SessionStart({ onBegin }: SessionStartProps) {
                   : "none",
               }}
             >
+              {tappedId === sprite.id && (
+                <div className="animate-sprite-tap pointer-events-none absolute inset-0 rounded-xl" />
+              )}
               <div
                 className={`transition-all ${owned ? "animate-sprite-float" : "opacity-30 grayscale"}`}
                 style={owned ? { animationDelay: FLOAT_DELAYS[i] } : undefined}

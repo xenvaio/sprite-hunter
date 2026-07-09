@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { speech } from "../audio/speech";
+import { audioPlayer } from "../audio/audioPlayer";
 import { rarityConfigFor } from "../game/rarityEngine";
 import type { HuntEntry } from "../game/types";
 import SpriteArt from "./SpriteSvg";
@@ -16,9 +16,7 @@ interface SessionEndProps {
  */
 export default function SessionEnd({ captures, onAgain }: SessionEndProps) {
   useEffect(() => {
-    const n = captures.length;
-    const message = `Hunt complete! ${n} ${n === 1 ? "sprite" : "sprites"} captured. Well done — the Island's sprites are in good hands.`;
-    const t = setTimeout(() => speech.guidance(message), 800);
+    const t = setTimeout(() => audioPlayer.playSessionEnd(captures.length), 800);
     return () => clearTimeout(t);
   }, [captures.length]);
 
