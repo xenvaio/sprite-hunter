@@ -1,9 +1,9 @@
 # Sprite Hunter — Build Status
 
-**Last updated:** 2026-07-07
-**Current phase:** 2.5 (Visual Overhaul) — substantially complete, pending speech verification in Chrome
+**Last updated:** 2026-07-09
+**Current phase:** 3 (Audio) — HTML5 Audio migration complete; pre-generated MP3s active with Web Speech API fallback
 **Stack:** React 18 + TypeScript strict + Tailwind CSS v4 + Vite 6
-**Target:** iPad-first (768x1024), Chrome, touch-optimised
+**Target:** iPad-first (768x1024), iPhone 14 (390x844), Chrome + Safari, touch-optimised
 
 ---
 
@@ -230,17 +230,36 @@ end ──[reset]──> start
 
 ---
 
+## Phase 3 — Audio (Complete as of 2026-07-09)
+
+### New: `src/audio/audioPlayer.ts`
+- Routes all game speech through HTML5 Audio (`/audio/*.mp3`)
+- Falls back to Web Speech API (Microsoft Catherine en-AU) if file is absent or fails
+- Dynamic: dropping new MP3s into `public/audio/` picks them up automatically with no code changes
+- Covers: intro, hunt-start (forest/storm), praise (10 variants), encouragement (5 variants), word pronunciations (24 pre-generated), session end (counts 0–10), sprite names (20), cosmic capture
+- `preload()` warms the cache for sys-intro, sys-hunt-forest, sys-hunt-storm inside first gesture
+
+### New interactivity
+- **Word replay button** — Speaker SVG beside the displayed word; tapping replays the word audio
+- **Sprite tap** — Tapping any sprite card in collection plays its name (owned) or a descending tone (unowned), with amber glow-pulse animation
+- **Tap hand** — Animated SVG hand bounces below TAP TO BEGIN text
+
+### Audio file naming issue (3 files)
+Three ElevenLabs-generated files have double `.mp3` extension and need renaming:
+- `praise-got-em.mp3.mp3` → rename to `praise-got-em.mp3`
+- `praise-nailed-it.mp3.mp3` → rename to `praise-nailed-it.mp3`
+- `praise-you-got-it.mp3.mp3` → rename to `praise-you-got-it.mp3`
+Until renamed, these three phrases fall back to Web Speech API.
+
 ## Known Bugs / Open Issues
 
-1. **Speech intermittency (needs Chrome verification)** — Latest speech.ts addresses cancel/speak race conditions and gesture gating. Opening guidance speech added. User has not verified in Chrome.
+1. **3 praise MP3 files need renaming** — See above.
 
-2. **Chrome resume() workaround missing** — For sessions >15s, Chrome speechSynthesis can stall. Periodic `resume()` should be re-added once basic speech is confirmed.
+2. **Player switching not implemented** — Always uses `players[0]` (Mason). Phase 4 scope.
 
-3. **Player switching not implemented** — Always uses `players[0]` (Mason). Phase 4 scope.
+3. **Legacy storm-lightning CSS animations** — No longer used. Harmless but could be removed.
 
-4. **Legacy storm-lightning CSS animations** — No longer used after switching to photo backgrounds. Could be removed for cleanup but harmless.
-
-5. **lobby-bg.png superseded** — Can be removed from public/ (replaced by sprite hunter background.jpg).
+4. **lobby-bg.png superseded** — Can be removed from public/ (replaced by sprite hunter background.jpg).
 
 ---
 
