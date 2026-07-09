@@ -17,11 +17,26 @@ let pendingTimer: ReturnType<typeof setTimeout> | null = null;
 
 let onGestureCallbacks: (() => void)[] = [];
 
+// Speak a near-silent utterance to unlock the Web Speech engine. Browsers
+// (iOS Safari especially) block speechSynthesis until the FIRST speak() runs
+// inside a user gesture — without this, later word playback is silent.
+function unlockSynthesis(): void {
+  if (!supported) return;
+  try {
+    const u = new SpeechSynthesisUtterance(" ");
+    u.volume = 0;
+    window.speechSynthesis.speak(u);
+  } catch {
+    // ignore
+  }
+}
+
 // Gate all speech on a confirmed user gesture. Fires once on first tap/key.
 if (typeof document !== "undefined") {
   const markGesture = () => {
     console.log('GESTURE FIRED');
     gestureReceived = true;
+    unlockSynthesis();
     for (const cb of onGestureCallbacks) cb();
     onGestureCallbacks = [];
   };
@@ -141,6 +156,11 @@ export const speech = {
       console.log('SPEAKING:', text);
       window.speechSynthesis.speak(makeUtterance(text, settings.rate));
     } catch { /* ignore */ }
+  },
+
+  // Unlock the synthesis engine from within a user gesture (call before any await).
+  unlock(): void {
+    unlockSynthesis();
   },
 
   onFirstGesture(cb: () => void): void {

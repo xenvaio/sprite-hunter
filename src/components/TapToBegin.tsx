@@ -2,6 +2,7 @@ import { useState } from "react";
 import { getResumedCtx } from "../audio/audioContext";
 import { ambientAudio } from "../audio/ambient";
 import { audioPlayer } from "../audio/audioPlayer";
+import { speech } from "../audio/speech";
 
 interface Props {
   onComplete: () => void;
@@ -12,6 +13,9 @@ export default function TapToBegin({ onComplete }: Props) {
 
   const handleTap = async () => {
     if (fading) return;
+    // Unlock Web Speech synchronously in the gesture (before any await) so the
+    // spoken-word fallback works later — iOS Safari blocks it otherwise.
+    speech.unlock();
     setFading(true);
     audioPlayer.preload();
     try { await getResumedCtx(); } catch { /* ignore */ }
