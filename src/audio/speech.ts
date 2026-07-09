@@ -11,6 +11,14 @@ interface SpeechSettings {
 const settings = config.speech as SpeechSettings;
 const supported = typeof window !== "undefined" && "speechSynthesis" in window;
 
+// Flip to true to trace speech events in the console — logs the first user
+// gesture and every utterance. Handy for diagnosing silent-speech issues
+// (e.g. on iPad). Left in place and gated so it stays silent in normal use.
+const DEBUG_SPEECH = false;
+function trace(...args: unknown[]): void {
+  if (DEBUG_SPEECH) console.log("[speech]", ...args);
+}
+
 let chosenVoice: SpeechSynthesisVoice | null = null;
 let gestureReceived = false;
 let pendingTimer: ReturnType<typeof setTimeout> | null = null;
@@ -34,7 +42,7 @@ function unlockSynthesis(): void {
 // Gate all speech on a confirmed user gesture. Fires once on first tap/key.
 if (typeof document !== "undefined") {
   const markGesture = () => {
-    console.log('GESTURE FIRED');
+    trace("GESTURE FIRED");
     gestureReceived = true;
     unlockSynthesis();
     for (const cb of onGestureCallbacks) cb();
@@ -98,7 +106,7 @@ function speakInterrupt(text: string, rate: number): void {
   pendingTimer = setTimeout(() => {
     pendingTimer = null;
     try {
-      console.log('SPEAKING:', text);
+      trace("SPEAKING:", text);
       window.speechSynthesis.speak(makeUtterance(text, rate));
     } catch {
       // ignore
@@ -109,7 +117,7 @@ function speakInterrupt(text: string, rate: number): void {
 // Queue behind whatever is currently speaking — no cancel.
 function speakQueue(text: string, rate: number): void {
   try {
-    console.log('SPEAKING:', text);
+    trace("SPEAKING:", text);
     window.speechSynthesis.speak(makeUtterance(text, rate));
   } catch {
     // ignore
@@ -153,7 +161,7 @@ export const speech = {
     if (pendingTimer !== null) { clearTimeout(pendingTimer); pendingTimer = null; }
     try {
       window.speechSynthesis.cancel();
-      console.log('SPEAKING:', text);
+      trace("SPEAKING:", text);
       window.speechSynthesis.speak(makeUtterance(text, settings.rate));
     } catch { /* ignore */ }
   },
