@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import { audioPlayer } from "./audio/audioPlayer";
 import { ambientAudio } from "./audio/ambient";
 import CaptureAnimation from "./components/CaptureAnimation";
@@ -123,6 +123,13 @@ export default function App() {
   const [audioUnlocked, setAudioUnlocked] = useState(false);
   const current: HuntEntry | undefined = state.hunt[state.index];
 
+  // The first word of a hunt is spoken by the hunt-intro's onEnd callback (so it
+  // doesn't overlap the announcement); this ref tells the auto-speak effect to
+  // skip that first word. idxRef guards the chained callback against a fast capture.
+  const skipFirstWord = useRef(false);
+  const idxRef = useRef(0);
+  idxRef.current = state.index;
+
   useEffect(() => {
     if (!state.celebrating || !current) return;
     const t = setTimeout(
@@ -134,6 +141,10 @@ export default function App() {
 
   useEffect(() => {
     if (state.screen !== "hunt" || !current || state.celebrating) return;
+    if (skipFirstWord.current) {
+      skipFirstWord.current = false;
+      return;
+    }
     const t = setTimeout(() => audioPlayer.playWord(current.word), 400);
     return () => clearTimeout(t);
   }, [state.screen, state.index, state.celebrating]);
@@ -152,11 +163,12 @@ export default function App() {
 
   const handleBegin = (variant: HuntVariant) => {
     ambientAudio.fadeOut();
-    audioPlayer.playHuntStart(variant.id);
-    dispatch({
-      type: "begin",
-      variant,
-      hunt: buildHunt(activePlayer.wordTier, spritesPerSession, tierVariance),
+    const hunt = buildHunt(activePlayer.wordTier, spritesPerSession, tierVariance);
+    skipFirstWord.current = true;
+    dispatch({ type: "begin", variant, hunt });
+    // Speak the first word only after the hunt announcement finishes.
+    audioPlayer.playHuntStart(variant.id, () => {
+      if (idxRef.current === 0) audioPlayer.playWord(hunt[0].word);
     });
   };
 

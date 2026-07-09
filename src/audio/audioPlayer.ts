@@ -35,14 +35,35 @@ const ENCOURAGE_FILE: Record<string, string> = {
 
 // Attempt to play an audio file; if the file is absent or fails, call fallback.
 // Dynamic — new files dropped in /audio/ are picked up without code changes.
-function playFile(filename: string, fallback: () => void): void {
+// onEnd (optional) fires once when playback finishes, so callers can chain the
+// next utterance without overlapping (e.g. the first word after the hunt intro).
+function playFile(filename: string, fallback: () => void, onEnd?: () => void): void {
   const cached = preloadCache.get(filename);
   const audio = cached ?? new Audio(`${AUDIO_BASE}${filename}`);
   if (cached) audio.currentTime = 0;
 
-  const onErr = () => fallback();
-  audio.onerror = onErr;
-  audio.play().catch(onErr);
+  // A missing file fires BOTH audio.onerror AND a rejected play() promise —
+  // guard so the fallback (and onEnd) runs exactly once, not twice.
+  let done = false;
+  const end = () => {
+    if (done) return;
+    done = true;
+    onEnd?.();
+  };
+  const fail = () => {
+    if (done) return;
+    done = true;
+    fallback();
+    // Give the spoken fallback room to finish before any chained utterance.
+    if (onEnd) setTimeout(onEnd, 1600);
+  };
+
+  audio.onerror = fail;
+  audio.onended = end;
+  audio.play().catch(fail);
+
+  // Safety: if 'ended' never fires, release the chain anyway.
+  if (onEnd) setTimeout(() => { if (!done) end(); }, 4000);
 }
 
 export const audioPlayer = {
@@ -65,10 +86,14 @@ export const audioPlayer = {
     );
   },
 
-  playHuntStart(variantId: string): void {
+  // onEnd fires when the announcement finishes — used to speak the first word
+  // only after "<Variant>! Let's go!" has fully played (no overlap).
+  playHuntStart(variantId: string, onEnd?: () => void): void {
     const name = variantId === "forest" ? "Forest Hunt" : "Storm Hunt";
-    playFile(`sys-hunt-${variantId}.mp3`, () =>
-      speech.guidance(`${name}! Let's go!`),
+    playFile(
+      `sys-hunt-${variantId}.mp3`,
+      () => speech.guidance(`${name}! Let's go!`),
+      onEnd,
     );
   },
 

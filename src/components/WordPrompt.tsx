@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 interface WordPromptProps {
   word: string;
@@ -7,23 +7,49 @@ interface WordPromptProps {
   onReplay?: () => void;
 }
 
+const MAX_FONT = 88; // px — upper bound; long words scale down to fit the card
+const MIN_FONT = 34; // px — never smaller than this
+
 export default function WordPrompt({ word, disabled, onAttempt, onReplay }: WordPromptProps) {
   const [value, setValue] = useState("");
+  const [fontPx, setFontPx] = useState(MAX_FONT);
   const inputRef = useRef<HTMLInputElement>(null);
+  const rowRef = useRef<HTMLDivElement>(null);
+  const wordRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     setValue("");
     if (!disabled) inputRef.current?.focus();
   }, [word, disabled]);
 
+  // Reset to the max size whenever the word changes, then measure below.
+  useLayoutEffect(() => {
+    setFontPx(MAX_FONT);
+  }, [word]);
+
+  // Shrink the word until it fits the available row width (minus space reserved
+  // for the replay button so the word stays centred and never overflows the card).
+  useLayoutEffect(() => {
+    const el = wordRef.current;
+    const row = rowRef.current;
+    if (!el || !row) return;
+    const avail = row.clientWidth - 92;
+    if (el.scrollWidth > avail && avail > 0) {
+      setFontPx((f) => Math.max(MIN_FONT, Math.floor((f * avail) / el.scrollWidth)));
+    }
+  });
+
   return (
     <div className="flex w-full flex-col items-center gap-4 sm:gap-7">
-      <div className="flex items-center gap-3">
+      <div ref={rowRef} className="relative flex w-full items-center justify-center">
         <p
+          ref={wordRef}
           data-testid="word"
           className="font-display text-center font-bold tracking-[0.08em] text-white"
           style={{
-            fontSize: "clamp(48px, 9vw, 88px)",
+            fontSize: `${fontPx}px`,
+            lineHeight: 1.05,
+            whiteSpace: "nowrap",
             textShadow: "0 0 26px rgba(45, 125, 154, 0.6)",
           }}
         >
@@ -35,15 +61,13 @@ export default function WordPrompt({ word, disabled, onAttempt, onReplay }: Word
             type="button"
             aria-label="Hear the word again"
             onClick={onReplay}
-            className="flex-shrink-0 rounded-lg p-2 transition-opacity hover:opacity-80 active:scale-95"
+            className="absolute right-0 rounded-lg p-2 transition-opacity hover:opacity-80 active:scale-95"
             style={{
-              color: "rgba(45, 125, 154, 0.75)",
+              color: "rgba(45, 125, 154, 0.85)",
               background: "transparent",
               border: "none",
               outline: "none",
               WebkitTapHighlightColor: "transparent",
-              alignSelf: "center",
-              marginTop: "4px",
             }}
           >
             <svg viewBox="0 0 20 20" width="22" height="22" fill="currentColor" aria-hidden="true">

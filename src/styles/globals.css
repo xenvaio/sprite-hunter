@@ -155,18 +155,24 @@ body,
 .animate-storm-lightning { animation: storm-lightning 4s ease-in-out infinite; }
 .animate-storm-lightning-2 { animation: storm-lightning-2 5s ease-in-out infinite 1.5s; }
 
-/* ── Tap to Begin overlay pulse ── */
+/* ── Tap to Begin overlay — hand + text in sync at 1.8s / 35% peak ── */
 @keyframes tap-glow-pulse {
-  0%, 100% {
+  0% {
     transform: scale(1);
-    text-shadow: 0 0 18px rgba(232,160,32,0.55), 0 0 44px rgba(232,160,32,0.18);
+    text-shadow: 0 0 16px rgba(232,160,32,0.4), 0 0 40px rgba(232,160,32,0.12);
+    animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
   }
-  50% {
+  35% {
     transform: scale(1.07);
-    text-shadow: 0 0 30px rgba(232,160,32,1), 0 0 64px rgba(232,160,32,0.55), 0 0 96px rgba(232,160,32,0.15);
+    text-shadow: 0 0 30px rgba(232,160,32,1), 0 0 64px rgba(232,160,32,0.6), 0 0 100px rgba(232,160,32,0.22);
+    animation-timing-function: cubic-bezier(0, 0, 0.6, 1);
+  }
+  60%, 100% {
+    transform: scale(1);
+    text-shadow: 0 0 16px rgba(232,160,32,0.4), 0 0 40px rgba(232,160,32,0.12);
   }
 }
-.animate-tap-glow-pulse { animation: tap-glow-pulse 2.2s ease-in-out infinite; }
+.animate-tap-glow-pulse { animation: tap-glow-pulse 1.8s infinite; }
 
 /* Hunt button pulse — draws attention to the call-to-action */
 @keyframes btn-pulse {
@@ -197,12 +203,24 @@ body,
 .float-delay-1 { animation-delay: -1.6s; }
 .float-delay-2 { animation-delay: -2.4s; }
 
-/* ── Tap hand indicator (TapToBegin) ── */
+/* ── Tap graphic (TapToBegin) — presses down + glows, synced with tap-glow-pulse at 1.8s / 35% ── */
 @keyframes tap-hand {
-  0%, 60%, 100% { transform: translateY(0) scale(1); opacity: 0.72; }
-  35% { transform: translateY(9px) scale(0.9); opacity: 1; }
+  0% {
+    transform: translateY(0) scale(1);
+    filter: drop-shadow(0 0 6px rgba(232,160,32,0.35));
+    animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
+  }
+  35% {
+    transform: translateY(8px) scale(0.97);
+    filter: drop-shadow(0 0 22px rgba(232,160,32,0.95));
+    animation-timing-function: cubic-bezier(0, 0, 0.6, 1);
+  }
+  60%, 100% {
+    transform: translateY(0) scale(1);
+    filter: drop-shadow(0 0 6px rgba(232,160,32,0.35));
+  }
 }
-.animate-tap-hand { animation: tap-hand 1.6s ease-in-out infinite; }
+.animate-tap-hand { animation: tap-hand 1.8s infinite; }
 
 /* ── Sprite tap pulse (collection grid) ── */
 @keyframes sprite-tap-pulse {
