@@ -48,32 +48,36 @@ export function pickPraise(): string {
 }
 
 /**
- * Roll a word tier for one hunt slot: weighted toward the player's tier,
- * with occasional ±variance to keep the session interesting without
- * causing frustration (brief §6).
+ * Roll a word tier (1–5) for one hunt slot from explicit per-tier weights.
+ * `weights[0]` is tier 1 (Common) … `weights[4]` is tier 5 (Legendary).
+ * This is what keeps all five rarities reachable in a single blended
+ * session — Common appears most often, Legendary rarely but possibly.
  */
-function rollTier(baseTier: number, variance: number, rng: () => number): number {
-  const roll = rng();
-  if (roll < 0.6 || variance === 0) return clampTier(baseTier);
-  if (roll < 0.8) return clampTier(baseTier - variance);
-  return clampTier(baseTier + variance);
+function rollWeightedTier(weights: number[], rng: () => number): number {
+  const total = weights.reduce((sum, w) => sum + w, 0);
+  let roll = rng() * total;
+  for (let i = 0; i < weights.length; i++) {
+    roll -= weights[i];
+    if (roll < 0) return clampTier(i + 1);
+  }
+  return clampTier(weights.length);
 }
 
 /**
- * Build a full hunt: `count` word/sprite pairs for the given player tier.
- * Words are drawn without repeats while a tier's pool lasts.
+ * Build a full hunt: `count` word/sprite pairs. Each slot's tier — and thus
+ * the sprite rarity bound to it — is drawn from `weights` (one entry per
+ * tier). Words are drawn without repeats while a tier's pool lasts.
  */
 export function buildHunt(
-  playerTier: number,
   count: number,
-  variance: number,
+  weights: number[],
   rng: () => number = Math.random,
 ): HuntEntry[] {
   const used = new Set<string>();
   const entries: HuntEntry[] = [];
 
   for (let i = 0; i < count; i++) {
-    const tier = rollTier(playerTier, variance, rng);
+    const tier = rollWeightedTier(weights, rng);
     const pool = wordTiers[tier];
     const fresh = pool.filter((w) => !used.has(w));
     const source = fresh.length > 0 ? fresh : pool;

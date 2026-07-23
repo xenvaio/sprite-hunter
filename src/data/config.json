@@ -6,7 +6,7 @@
   "session": {
     "spritesPerSession": 10,
     "maxSessionMinutes": 10,
-    "tierVariance": 1,
+    "tierWeights": [40, 30, 20, 8, 2],
     "nextSpriteDelayMs": 1500
   },
   "speech": {

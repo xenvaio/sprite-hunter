@@ -23,7 +23,7 @@ import {
   totalXp,
   xpForTier,
 } from "./game/sessionEngine";
-import type { HuntEntry, HuntVariant, PlayerConfig } from "./game/types";
+import type { HuntEntry, HuntVariant } from "./game/types";
 
 interface GameState {
   screen: "start" | "hunt" | "end";
@@ -115,8 +115,7 @@ function reducer(state: GameState, action: GameAction): GameState {
   }
 }
 
-const activePlayer = (config.players as PlayerConfig[])[0];
-const { spritesPerSession, maxSessionMinutes, tierVariance } = config.session;
+const { spritesPerSession, maxSessionMinutes, tierWeights } = config.session;
 
 export default function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -169,7 +168,7 @@ export default function App() {
   const handleBegin = (variant: HuntVariant) => {
     audioPlayer.stopAll();
     ambientAudio.fadeOut();
-    const hunt = buildHunt(activePlayer.wordTier, spritesPerSession, tierVariance);
+    const hunt = buildHunt(spritesPerSession, tierWeights);
     skipFirstWord.current = true;
     dispatch({ type: "begin", variant, hunt });
     // Speak the first word only after the hunt announcement finishes.
